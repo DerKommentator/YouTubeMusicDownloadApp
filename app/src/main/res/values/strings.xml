@@ -1,0 +1,25 @@
+<resources>
+    <string name="app_name">YouTube Music Downloader</string>
+
+    <string name="action_settings">Settings</string>
+
+    <!--Create Download List Page-->
+    <string name="fragment_create_url_list">Create URL List</string>
+    <string name="textview_create_url_list">URL List:</string>
+    <string name="edittext_hint_url_list">YouTube URL</string>
+    <string name="button_delete_url">Delete</string>
+
+
+    <string name="button_add_url">Add URL</string>
+
+
+    <!--Download Music Page-->
+    <string name="fragment_download_music">Download Music</string>
+
+
+
+    <!--History Page-->
+    <string name="fragment_history">History</string>
+
+
+</resources>
