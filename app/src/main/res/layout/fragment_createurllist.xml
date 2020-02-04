@@ -41,12 +41,12 @@
             android:hint="@string/edittext_hint_url_list"
             android:importantForAutofill="no"
             android:inputType="textPersonName"
-            app:layout_constraintEnd_toStartOf="@+id/button_delete_url_field"
+            app:layout_constraintEnd_toStartOf="@+id/button_delete_url"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <Button
-            android:id="@+id/button_delete_url_field"
+            android:id="@+id/button_delete_url"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
@@ -57,30 +57,29 @@
 
     </android.support.constraint.ConstraintLayout>
 
+    <LinearLayout
+        android:id="@+id/fragment_container_url_add"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/constraint_field_url">
+
+    </LinearLayout>
+
     <Button
         android:id="@+id/button_add_url"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
         android:text="@string/button_add_url"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.468"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraint_field_url" />
+        app:layout_constraintTop_toBottomOf="@+id/fragment_container_url_add" />
 
-    <LinearLayout
-        android:id="@+id/fragment_container_url_add"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button_add_url">
-
-    </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

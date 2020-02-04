@@ -12,6 +12,6 @@ public class URLAddFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         /* Inflating the layout for this fragment */
-        return inflater.inflate(R.layout.field_url_add2, null);
+        return inflater.inflate(R.layout.field_url_add, null);
     }
 }
