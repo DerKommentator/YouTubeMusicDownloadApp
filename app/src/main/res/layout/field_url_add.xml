@@ -15,6 +15,7 @@
         android:ems="10"
         android:hint="@string/edittext_hint_url_list"
         android:importantForAutofill="no"
+        android:onClick="addEditText"
         android:inputType="textPersonName"
         app:layout_constraintEnd_toStartOf="@+id/button_delete_url"
         app:layout_constraintStart_toStartOf="parent"

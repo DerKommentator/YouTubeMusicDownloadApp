@@ -9,8 +9,10 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 
 import java.util.ArrayList;
@@ -23,7 +25,7 @@ import com.app.youtubemusicdownloader.fragments.HistoryFragment;
 
 public class MainActivity extends AppCompatActivity {
 
-    private ConstraintLayout url_add_fragment;
+    private ArrayList<EditText> editText_ArrayList= new ArrayList<>();
     private Toolbar toolbar;
     private TabLayout tabLayout;
     private ViewPager viewPager;
@@ -38,7 +40,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        url_add_fragment = (ConstraintLayout) findViewById(R.id.constraint_main); // TODO:  del View
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -52,9 +53,34 @@ public class MainActivity extends AppCompatActivity {
         setupTabIcons();
     }
 
-    public void onDelete(View view) // TODO:    del View
+    // XML onClick Methods
+    public void onDelete(View view)
     {
-        url_add_fragment.removeView((View) view.getParent());
+        ViewGroup parent = (ViewGroup) view.getParent();
+        parent.setVisibility(View.GONE);
+    }
+
+    public void addEditText(View view)
+    {
+
+        if(!editText_ArrayList.contains((EditText) view))
+        {
+            editText_ArrayList.add((EditText) view);
+            //Log.d("EditTextList", "" + editText_ArrayList.size());
+        }
+    }
+
+    public void fetch_button(View view) //TODO  fetch button
+    {
+        editTexttoString(editText_ArrayList);
+    }
+
+    public void editTexttoString(ArrayList<EditText> arrayList)
+    {
+        for(EditText editText: arrayList)
+        {
+            Log.d("EditText", editText.getText().toString());
+        }
     }
 
     private void setupTabIcons() {
@@ -66,8 +92,8 @@ public class MainActivity extends AppCompatActivity {
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFrag(new CreateURLListFragment(), "Create DL List");
-        adapter.addFrag(new HistoryFragment(), "Download Music");
-        adapter.addFrag(new DownloadMusicFragment(), "History");
+        adapter.addFrag(new DownloadMusicFragment(), "Download Music");
+        adapter.addFrag(new HistoryFragment(), "History");
         viewPager.setAdapter(adapter);
     }
 
