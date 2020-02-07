@@ -11,7 +11,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.app.youtubemusicdownloader.R;
-import com.app.youtubemusicdownloader.activity.MainActivity;
+
+import java.util.ArrayList;
 
 
 public class DownloadMusicFragment extends Fragment{
@@ -23,6 +24,7 @@ public class DownloadMusicFragment extends Fragment{
     Button fetch_button;
     TextView songs_list;
     EditText songs_url_input;
+    ArrayList<View> editText_views = new ArrayList<>();
 
 
     @Override
@@ -34,24 +36,34 @@ public class DownloadMusicFragment extends Fragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View root_view = inflater.inflate(R.layout.fragment_downloadmusic, container, false);
-
-        fetch_button = (Button)root_view.findViewById(R.id.fetch_songs);
-        songs_list = (TextView)root_view.findViewById(R.id.songs_list);
-        songs_url_input = (EditText)root_view.findViewById(R.id.edittext_url_input);
-
-
-        fetch_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                Log.d("EditText", songs_url_input.toString());
-            }
-        });
-
-
-
-        return root_view;
+        return inflater.inflate(R.layout.fragment_downloadmusic, container, false);
     }
 
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState)
+    {
+        super.onActivityCreated(savedInstanceState);
+
+        View root_view = getView();
+
+
+        if(root_view != null)
+        {
+            fetch_button = (Button)root_view.findViewById(R.id.fetch_songs);
+            songs_list = (TextView)root_view.findViewById(R.id.songs_list);
+
+
+            fetch_button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    View createDLList_view = getFragmentManager().getFragments().get(0).getView();
+                    //createDLList_view.findViewsWithText(editText_views, "", View.FIND_VIEWS_WITH_TEXT);
+
+                    Log.d("fragMNG", "" + songs_url_input.getText().toString());
+                    //Log.d("EditText", songs_url_input.toString());
+                }
+            });
+        }
+    }
 }

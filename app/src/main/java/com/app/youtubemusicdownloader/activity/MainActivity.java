@@ -66,20 +66,7 @@ public class MainActivity extends AppCompatActivity {
         if(!editText_ArrayList.contains((EditText) view))
         {
             editText_ArrayList.add((EditText) view);
-            //Log.d("EditTextList", "" + editText_ArrayList.size());
-        }
-    }
-
-    public void fetch_button(View view) //TODO  fetch button
-    {
-        editTexttoString(editText_ArrayList);
-    }
-
-    public void editTexttoString(ArrayList<EditText> arrayList)
-    {
-        for(EditText editText: arrayList)
-        {
-            Log.d("EditText", editText.getText().toString());
+            Log.d("EditTextList", "" + editText_ArrayList);
         }
     }
 
