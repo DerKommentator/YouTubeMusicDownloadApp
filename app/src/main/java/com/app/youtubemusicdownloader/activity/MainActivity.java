@@ -25,7 +25,6 @@ import com.app.youtubemusicdownloader.fragments.HistoryFragment;
 
 public class MainActivity extends AppCompatActivity {
 
-    private ArrayList<EditText> editText_ArrayList= new ArrayList<>();
     private Toolbar toolbar;
     private TabLayout tabLayout;
     private ViewPager viewPager;
@@ -58,16 +57,6 @@ public class MainActivity extends AppCompatActivity {
     {
         ViewGroup parent = (ViewGroup) view.getParent();
         parent.setVisibility(View.GONE);
-    }
-
-    public void addEditText(View view)
-    {
-
-        if(!editText_ArrayList.contains((EditText) view))
-        {
-            editText_ArrayList.add((EditText) view);
-            Log.d("EditTextList", "" + editText_ArrayList);
-        }
     }
 
     private void setupTabIcons() {

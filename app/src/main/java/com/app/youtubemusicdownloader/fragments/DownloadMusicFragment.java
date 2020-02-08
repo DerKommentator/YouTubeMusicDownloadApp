@@ -22,9 +22,6 @@ public class DownloadMusicFragment extends Fragment{
     }
 
     Button fetch_button;
-    TextView songs_list;
-    EditText songs_url_input;
-    ArrayList<View> editText_views = new ArrayList<>();
 
 
     @Override
@@ -37,6 +34,7 @@ public class DownloadMusicFragment extends Fragment{
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_downloadmusic, container, false);
+
     }
 
 
@@ -51,17 +49,16 @@ public class DownloadMusicFragment extends Fragment{
         if(root_view != null)
         {
             fetch_button = (Button)root_view.findViewById(R.id.fetch_songs);
-            songs_list = (TextView)root_view.findViewById(R.id.songs_list);
+            final View createDLList_view = getFragmentManager().getFragments().get(0).getView();
 
-
-            fetch_button.setOnClickListener(new View.OnClickListener() {
+            fetch_button.setOnClickListener(new View.OnClickListener()
+            {
                 @Override
-                public void onClick(View view) {
-                    View createDLList_view = getFragmentManager().getFragments().get(0).getView();
-                    //createDLList_view.findViewsWithText(editText_views, "", View.FIND_VIEWS_WITH_TEXT);
-
-                    Log.d("fragMNG", "" + songs_url_input.getText().toString());
-                    //Log.d("EditText", songs_url_input.toString());
+                public void onClick(View view)
+                {
+                    //EditText test = (EditText)createDLList_view.findViewWithTag("edit_text_input_url0");
+                    //Log.d("printEdit", "" + getFragmentManager().getFragments());
+                    // TODO     transfer der url Strings in dieses Fragment
                 }
             });
         }
