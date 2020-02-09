@@ -41,6 +41,7 @@ public class CreateURLListFragment extends Fragment {
 
     EditText edittext_input;
     Button button_add_url;
+    TextView url_counter;
     int i = 0;
 
 
@@ -89,7 +90,7 @@ public class CreateURLListFragment extends Fragment {
         editText.setFocusable(false);
         editText.setHeight(WRAP_CONTENT);
         editText.layout(8,32, 8, 0);
-        editText.setEms(15);
+        editText.setEms(17);
         editText.setHint(url);
         editText.setTag("edit_text_input_url" + i++);
         editText.setInputType(InputType.TYPE_CLASS_TEXT);
@@ -124,6 +125,7 @@ public class CreateURLListFragment extends Fragment {
         {
             edittext_input = (EditText)root_view.findViewById(R.id.edittext_input_id);
             button_add_url = (Button)root_view.findViewById(R.id.button_add_url);
+            url_counter = (TextView)root_view.findViewById(R.id.url_counter);
             //textview_show_song = (TextView)root_view.findViewById(R.id.textview_show_song);
 
 
@@ -134,8 +136,8 @@ public class CreateURLListFragment extends Fragment {
                 @Override
                 public void onClick(View view)
                 {
-                    createRowInput(root_view, edittext_input.getText().toString());
-
+                    createRowInput(root_view, (edittext_input.getText().toString()).split("\\.", 2)[1]);
+                    url_counter.setText(Integer.toString(i));
                     edittext_input.setText("");
                 }
             });

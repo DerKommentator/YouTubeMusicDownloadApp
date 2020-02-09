@@ -16,7 +16,7 @@
     <!--Download Music Page-->
     <string name="fragment_download_music">Download Music</string>
     <string name="songs_list"></string>
-    <string name="fetch_songs">Fetch Songs</string>
+    <string name="download_songs">Download Songs</string>
 
 
 

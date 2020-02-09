@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.app.youtubemusicdownloader.R;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 
 public class DownloadMusicFragment extends Fragment{
@@ -21,7 +22,9 @@ public class DownloadMusicFragment extends Fragment{
         // Required empty public constructor
     }
 
-    Button fetch_button;
+    Button download_button;
+    String url;
+    ArrayList<String> urls = new ArrayList<>();
 
 
     @Override
@@ -48,17 +51,27 @@ public class DownloadMusicFragment extends Fragment{
 
         if(root_view != null)
         {
-            fetch_button = (Button)root_view.findViewById(R.id.fetch_songs);
-            final View createDLList_view = getFragmentManager().getFragments().get(0).getView();
+            download_button = (Button)root_view.findViewById(R.id.download_songs);
 
-            fetch_button.setOnClickListener(new View.OnClickListener()
+            download_button.setOnClickListener(new View.OnClickListener()
             {
                 @Override
                 public void onClick(View view)
                 {
-                    //EditText test = (EditText)createDLList_view.findViewWithTag("edit_text_input_url0");
-                    //Log.d("printEdit", "" + getFragmentManager().getFragments());
-                    // TODO     transfer der url Strings in dieses Fragment
+                    View createDLList_view = getFragmentManager().getFragments().get(0).getView();
+                    TextView url_counter = (TextView)createDLList_view.findViewById(R.id.url_counter);
+
+
+                    for(int i = 0; i < Integer.parseInt(url_counter.getText().toString()); i++)
+                    {
+                        url = ((EditText)createDLList_view.findViewWithTag("edit_text_input_url" + i)).getHint().toString();
+                        if(!urls.contains(url))
+                        {
+                            urls.add("https://www." + url);
+                        }
+                    }
+
+                    Log.d("edittext_url", urls.toString());
                 }
             });
         }
