@@ -1,5 +1,6 @@
 package com.app.youtubemusicdownloader.fragments;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -12,6 +13,14 @@ import android.widget.TextView;
 
 import com.app.youtubemusicdownloader.R;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -70,10 +79,52 @@ public class DownloadMusicFragment extends Fragment{
                             urls.add("https://www." + url);
                         }
                     }
+                    String url_list = "{\"encoder\" : \"mp3\", \"url_list\" : [\"https://www.youtube.com/watch?v=ES9vRfs2rbA\", \"https://www.youtube.com/watch?v=85CoKLuxTzY\"]}";
 
-                    Log.d("edittext_url", urls.toString());
+                    try
+                    {
+                        HttpURLConnection con = initConnection(url_list);
+                        response(con);
+                    }
+                    catch (IOException ieo)
+                    {
+                        Log.d("IOExceptionMSG", ieo.getMessage());
+                    }
+                    //Log.d("edittext_url", urls.toString());
                 }
             });
+        }
+    }
+
+    // TODO:    Post request, Json - https://www.androidstation.info/networkonmainthreadexception/
+
+    public HttpURLConnection initConnection(String jsonInputString) throws IOException
+    {
+        URL url_post = new URL("http://127.0.0.1:1337/download/json");
+        HttpURLConnection con = (HttpURLConnection)url_post.openConnection();
+        con.setRequestMethod("POST");
+        con.setRequestProperty("Content-Type", "application/json; utf-8");
+        con.setRequestProperty("Accept", "application/json");
+        con.setDoOutput(true);
+
+        try(OutputStream os = con.getOutputStream()) {
+            byte[] input = jsonInputString.getBytes(StandardCharsets.UTF_8);
+            os.write(input, 0, input.length);
+        }
+
+        return con;
+    }
+
+    public void response(HttpURLConnection con) throws IOException
+    {
+        try(BufferedReader br = new BufferedReader(
+                new InputStreamReader(con.getInputStream(), StandardCharsets.UTF_8))) {
+            StringBuilder response = new StringBuilder();
+            String responseLine = null;
+            while ((responseLine = br.readLine()) != null) {
+                response.append(responseLine.trim());
+            }
+            Log.d("responseString", response.toString());
         }
     }
 }

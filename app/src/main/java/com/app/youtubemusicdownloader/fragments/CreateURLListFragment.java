@@ -130,7 +130,6 @@ public class CreateURLListFragment extends Fragment {
 
 
 
-
             button_add_url.setOnClickListener(new View.OnClickListener()
             {
                 @Override
