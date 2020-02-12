@@ -1,5 +1,6 @@
 package com.app.youtubemusicdownloader.fragments;
 
+import android.app.DownloadManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -12,6 +13,13 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.app.youtubemusicdownloader.R;
+import com.squareup.okhttp.Call;
+import com.squareup.okhttp.Callback;
+import com.squareup.okhttp.MediaType;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.RequestBody;
+import com.squareup.okhttp.Response;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -32,6 +40,7 @@ public class DownloadMusicFragment extends Fragment{
     }
 
     Button download_button;
+    final String yt_download_server_url = "http://192.168.178.64:1337/download/json";
     String url;
     ArrayList<String> urls = new ArrayList<>();
 
@@ -81,50 +90,30 @@ public class DownloadMusicFragment extends Fragment{
                     }
                     String url_list = "{\"encoder\" : \"mp3\", \"url_list\" : [\"https://www.youtube.com/watch?v=ES9vRfs2rbA\", \"https://www.youtube.com/watch?v=85CoKLuxTzY\"]}";
 
-                    try
-                    {
-                        HttpURLConnection con = initConnection(url_list);
-                        response(con);
-                    }
-                    catch (IOException ieo)
-                    {
-                        Log.d("IOExceptionMSG", ieo.getMessage());
-                    }
-                    //Log.d("edittext_url", urls.toString());
+
+
+                    ConnectionBuilder conBuild = new ConnectionBuilder();
+                    conBuild.post(yt_download_server_url, url_list, new Callback() {
+                        @Override
+                        public void onFailure(Request request, IOException e) {
+                            Log.d("onFailure", "failed: " + e.getMessage());
+                            e.printStackTrace();
+                        }
+
+                        @Override
+                        public void onResponse(Response response) throws IOException {
+                            if (response.isSuccessful()) {
+                                String responseStr = response.body().string();
+                                Log.d("POSTresp", responseStr);
+                                // Do what you want to do with the response.
+                            } else {
+                                Log.d("POSTresp", "ERROR");
+                            }
+                        }
+                    });
                 }
             });
         }
     }
 
-    // TODO:    Post request, Json - https://www.androidstation.info/networkonmainthreadexception/
-
-    public HttpURLConnection initConnection(String jsonInputString) throws IOException
-    {
-        URL url_post = new URL("http://127.0.0.1:1337/download/json");
-        HttpURLConnection con = (HttpURLConnection)url_post.openConnection();
-        con.setRequestMethod("POST");
-        con.setRequestProperty("Content-Type", "application/json; utf-8");
-        con.setRequestProperty("Accept", "application/json");
-        con.setDoOutput(true);
-
-        try(OutputStream os = con.getOutputStream()) {
-            byte[] input = jsonInputString.getBytes(StandardCharsets.UTF_8);
-            os.write(input, 0, input.length);
-        }
-
-        return con;
-    }
-
-    public void response(HttpURLConnection con) throws IOException
-    {
-        try(BufferedReader br = new BufferedReader(
-                new InputStreamReader(con.getInputStream(), StandardCharsets.UTF_8))) {
-            StringBuilder response = new StringBuilder();
-            String responseLine = null;
-            while ((responseLine = br.readLine()) != null) {
-                response.append(responseLine.trim());
-            }
-            Log.d("responseString", response.toString());
-        }
-    }
 }

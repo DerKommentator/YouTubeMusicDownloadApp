@@ -135,7 +135,14 @@ public class CreateURLListFragment extends Fragment {
                 @Override
                 public void onClick(View view)
                 {
-                    createRowInput(root_view, (edittext_input.getText().toString()).split("\\.", 2)[1]);
+                    try
+                    {
+                        createRowInput(root_view, (edittext_input.getText().toString()).split("\\.", 2)[1]);
+                    }
+                    catch (IndexOutOfBoundsException oob)
+                    {
+                        createRowInput(root_view, edittext_input.getText().toString());
+                    }
                     url_counter.setText(Integer.toString(i));
                     edittext_input.setText("");
                 }
