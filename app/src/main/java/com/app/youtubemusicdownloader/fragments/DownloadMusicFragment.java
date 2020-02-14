@@ -22,7 +22,10 @@ import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
@@ -31,6 +34,8 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 
 public class DownloadMusicFragment extends Fragment{
@@ -40,9 +45,11 @@ public class DownloadMusicFragment extends Fragment{
     }
 
     Button download_button;
-    final String yt_download_server_url = "http://192.168.178.64:1337/download/json";
+    final String yt_download_server_url = "http://10.0.2.2:1337/download/json";
+    final String android_filename = "songs.zip";
+    final String android_path = "/storage/emulated/0/Music";
     String url;
-    ArrayList<String> urls = new ArrayList<>();
+    ArrayList<String> url_list = new ArrayList<>();
 
 
     @Override
@@ -83,17 +90,22 @@ public class DownloadMusicFragment extends Fragment{
                     for(int i = 0; i < Integer.parseInt(url_counter.getText().toString()); i++)
                     {
                         url = ((EditText)createDLList_view.findViewWithTag("edit_text_input_url" + i)).getHint().toString();
-                        if(!urls.contains(url))
+                        if(!url_list.contains("https://www." + url))
                         {
-                            urls.add("https://www." + url);
+                            url_list.add("https://www." + url);
                         }
                     }
-                    String url_list = "{\"encoder\" : \"mp3\", \"url_list\" : [\"https://www.youtube.com/watch?v=ES9vRfs2rbA\", \"https://www.youtube.com/watch?v=85CoKLuxTzY\"]}";
+                    // https://www.youtube.com/watch?v=ERlBHyOjeLI
+                    // https://www.youtube.com/watch?v=7zDkniNTeZg
 
+                    //String url_list = "{\"encoder\" : \"mp3\", \"url_list\" : [\"https://www.youtube.com/watch?v=ES9vRfs2rbA\", \"https://www.youtube.com/watch?v=85CoKLuxTzY\"]}";
 
+                    String json_input = "{\"encoder\" : \"mp3\", \"url_list\" : \"" + url_list + "\"}";
+                    Log.d("jsonInput", json_input);
+                    Log.d("jsonInput", url_list.toString());
 
                     ConnectionBuilder conBuild = new ConnectionBuilder();
-                    conBuild.post(yt_download_server_url, url_list, new Callback() {
+                    conBuild.post(yt_download_server_url, json_input, new Callback() {
                         @Override
                         public void onFailure(Request request, IOException e) {
                             Log.d("onFailure", "failed: " + e.getMessage());
@@ -103,9 +115,30 @@ public class DownloadMusicFragment extends Fragment{
                         @Override
                         public void onResponse(Response response) throws IOException {
                             if (response.isSuccessful()) {
-                                String responseStr = response.body().string();
-                                Log.d("POSTresp", responseStr);
-                                // Do what you want to do with the response.
+
+                                Log.d("path", getContext().getFilesDir().getPath() + "/" + android_filename);
+                                try
+                                {
+                                    //InputStream inputStream = response.body().byteStream();
+                                    //FileOutputStream output = new FileOutputStream(android_path + "/" + android_filename);
+                                    File f = new File(getContext().getFilesDir().getPath() + "/" + android_filename);
+                                    ZipOutputStream out = new ZipOutputStream(new FileOutputStream(f));
+                                    ZipEntry e = new ZipEntry("file.zip"); // TODO: save in zip
+                                    out.putNextEntry(e);
+
+                                    byte[] data = response.body().bytes();
+                                    out.write(data, 0, data.length);
+                                    out.closeEntry();
+
+                                    out.close();
+                                }
+                                catch (IOException ioe)
+                                {
+                                    Log.d("inputIOE", ioe.getMessage());
+                                }
+
+                                //String responseStr = response.body().string();
+                                Log.d("POSTresp", "SUCCESS");
                             } else {
                                 Log.d("POSTresp", "ERROR");
                             }
