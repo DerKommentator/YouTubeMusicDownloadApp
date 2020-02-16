@@ -3,6 +3,7 @@ package com.app.youtubemusicdownloader.fragments;
 import android.app.DownloadManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,8 +23,10 @@ import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -36,6 +39,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+
+import okio.BufferedSink;
+import okio.Okio;
 
 
 public class DownloadMusicFragment extends Fragment{
@@ -116,21 +122,14 @@ public class DownloadMusicFragment extends Fragment{
                         public void onResponse(Response response) throws IOException {
                             if (response.isSuccessful()) {
 
-                                Log.d("path", getContext().getFilesDir().getPath() + "/" + android_filename);
+                                //Log.d("path", Environment.getExternalStorageDirectory() + "");
                                 try
                                 {
-                                    //InputStream inputStream = response.body().byteStream();
-                                    //FileOutputStream output = new FileOutputStream(android_path + "/" + android_filename);
-                                    File f = new File(getContext().getFilesDir().getPath() + "/" + android_filename);
-                                    ZipOutputStream out = new ZipOutputStream(new FileOutputStream(f));
-                                    ZipEntry e = new ZipEntry("file.zip"); // TODO: save in zip
-                                    out.putNextEntry(e);
-
-                                    byte[] data = response.body().bytes();
-                                    out.write(data, 0, data.length);
-                                    out.closeEntry();
-
-                                    out.close();
+                                    //Log.d("resp", response.toString());
+                                    zipBytes(getContext().getFilesDir().getPath() + "/" + android_filename, response.body().source().readByteArray());
+                                    //saveText(getContext().getFilesDir().getPath() + "/", response.body().source());
+                                    //Log.d("savedInZip", response.body().string());
+                                    Log.d("savedInZip", "SUCCESS to save in zip");
                                 }
                                 catch (IOException ioe)
                                 {
@@ -138,7 +137,7 @@ public class DownloadMusicFragment extends Fragment{
                                 }
 
                                 //String responseStr = response.body().string();
-                                Log.d("POSTresp", "SUCCESS");
+                                //Log.d("POSTresp", "SUCCESS");
                             } else {
                                 Log.d("POSTresp", "ERROR");
                             }
@@ -147,6 +146,27 @@ public class DownloadMusicFragment extends Fragment{
                 }
             });
         }
+    }
+
+    public static byte[] zipBytes(String filename, byte[] input) throws IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ZipOutputStream zos = new ZipOutputStream(baos);
+        ZipEntry entry = new ZipEntry(filename);
+        entry.setSize(input.length);
+        zos.putNextEntry(entry);
+        zos.write(input);
+        zos.closeEntry();
+        zos.close();
+        return baos.toByteArray();
+    }
+
+    public static void saveText(String path, String input) throws IOException {
+        File root = new File(path);
+        File gpxfile = new File(root, "test.txt");
+        FileWriter writer = new FileWriter(gpxfile);
+        writer.append(input);
+        writer.flush();
+        writer.close();
     }
 
 }
