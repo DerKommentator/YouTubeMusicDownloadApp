@@ -23,6 +23,7 @@ import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -31,9 +32,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.channels.Channels;
+import java.nio.channels.FileChannel;
+import java.nio.channels.ReadableByteChannel;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -52,6 +57,7 @@ public class DownloadMusicFragment extends Fragment{
 
     Button download_button;
     final String yt_download_server_url = "http://10.0.2.2:1337/download/json";
+    final String download_songs = "http://10.0.2.2:1337/download/json_requested_songs?file=json_requested_songs";
     final String android_filename = "songs.zip";
     final String android_path = "/storage/emulated/0/Music";
     String url;
@@ -111,7 +117,8 @@ public class DownloadMusicFragment extends Fragment{
                     Log.d("jsonInput", url_list.toString());
 
                     ConnectionBuilder conBuild = new ConnectionBuilder();
-                    conBuild.post(yt_download_server_url, json_input, new Callback() {
+                    conBuild.post(yt_download_server_url, json_input, new Callback()
+                    {
                         @Override
                         public void onFailure(Request request, IOException e) {
                             Log.d("onFailure", "failed: " + e.getMessage());
@@ -121,52 +128,17 @@ public class DownloadMusicFragment extends Fragment{
                         @Override
                         public void onResponse(Response response) throws IOException {
                             if (response.isSuccessful()) {
-
-                                //Log.d("path", Environment.getExternalStorageDirectory() + "");
-                                try
-                                {
-                                    //Log.d("resp", response.toString());
-                                    zipBytes(getContext().getFilesDir().getPath() + "/" + android_filename, response.body().source().readByteArray());
-                                    //saveText(getContext().getFilesDir().getPath() + "/", response.body().source());
-                                    //Log.d("savedInZip", response.body().string());
-                                    Log.d("savedInZip", "SUCCESS to save in zip");
+                                try {
+                                    HttpDownloadUtility.downloadFile(download_songs, android_path);
+                                } catch (IOException e) {
+                                    e.printStackTrace();
                                 }
-                                catch (IOException ioe)
-                                {
-                                    Log.d("inputIOE", ioe.getMessage());
-                                }
-
-                                //String responseStr = response.body().string();
-                                //Log.d("POSTresp", "SUCCESS");
-                            } else {
-                                Log.d("POSTresp", "ERROR");
                             }
                         }
                     });
                 }
             });
         }
-    }
-
-    public static byte[] zipBytes(String filename, byte[] input) throws IOException {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ZipOutputStream zos = new ZipOutputStream(baos);
-        ZipEntry entry = new ZipEntry(filename);
-        entry.setSize(input.length);
-        zos.putNextEntry(entry);
-        zos.write(input);
-        zos.closeEntry();
-        zos.close();
-        return baos.toByteArray();
-    }
-
-    public static void saveText(String path, String input) throws IOException {
-        File root = new File(path);
-        File gpxfile = new File(root, "test.txt");
-        FileWriter writer = new FileWriter(gpxfile);
-        writer.append(input);
-        writer.flush();
-        writer.close();
     }
 
 }

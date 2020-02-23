@@ -16,8 +16,8 @@ public class ConnectionBuilder {
             = MediaType.parse("application/json; charset=utf-8");
 
     void post(String url, String json, Callback callback) {
-        client.setConnectTimeout(50, TimeUnit.SECONDS); // connect timeout
-        client.setReadTimeout(50, TimeUnit.SECONDS);    // socket timeout
+        client.setConnectTimeout(80, TimeUnit.SECONDS); // connect timeout
+        client.setReadTimeout(80, TimeUnit.SECONDS);    // socket timeout
         RequestBody body = RequestBody.create(JSON, json);
         Request request = new Request.Builder()
                 .url(url)
