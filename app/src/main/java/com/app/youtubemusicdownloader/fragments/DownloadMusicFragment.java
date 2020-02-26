@@ -25,6 +25,7 @@ import com.squareup.okhttp.Response;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
@@ -33,9 +34,13 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.net.HttpURLConnection;
+import java.net.InetAddress;
 import java.net.MalformedURLException;
+import java.net.Socket;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 import java.nio.channels.ReadableByteChannel;
@@ -62,6 +67,10 @@ public class DownloadMusicFragment extends Fragment{
     final String android_path = "/storage/emulated/0/Music";
     String url;
     ArrayList<String> url_list = new ArrayList<>();
+    Socket client;
+
+    private static final int SERVERPORT = 1234;
+    private static final String SERVER_IP = "10.0.2.2";
 
 
     @Override
@@ -84,6 +93,7 @@ public class DownloadMusicFragment extends Fragment{
         super.onActivityCreated(savedInstanceState);
 
         View root_view = getView();
+
 
 
         if(root_view != null)
@@ -116,7 +126,15 @@ public class DownloadMusicFragment extends Fragment{
                     Log.d("jsonInput", json_input);
                     Log.d("jsonInput", url_list.toString());
 
-                    ConnectionBuilder conBuild = new ConnectionBuilder();
+
+                    MyClientTask myClientTask = new MyClientTask(SERVER_IP, SERVERPORT);
+                    myClientTask.execute();
+
+
+
+
+
+                    /*ConnectionBuilder conBuild = new ConnectionBuilder();
                     conBuild.post(yt_download_server_url, json_input, new Callback()
                     {
                         @Override
@@ -135,10 +153,57 @@ public class DownloadMusicFragment extends Fragment{
                                 }
                             }
                         }
-                    });
+                    });*/
                 }
             });
         }
     }
 
+    public class MyClientTask extends AsyncTask<Void, Void, Void> {
+
+        String dstAddress;
+        int dstPort;
+        String response = "";
+
+        MyClientTask(String addr, int port){
+            dstAddress = addr;
+            dstPort = port;
+        }
+
+        @Override
+        protected Void doInBackground(Void... arg0) {
+
+            Socket socket = null;
+
+            try {
+                socket = new Socket(dstAddress, dstPort);
+
+                DataOutputStream dout=new DataOutputStream(socket.getOutputStream());
+                dout.writeUTF("Hello Server");
+                dout.flush();
+                dout.close();
+                socket.close();
+
+            } catch (UnknownHostException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+                response = "UnknownHostException: " + e.toString();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+                response = "IOException: " + e.toString();
+            }finally{
+                if(socket != null){
+                    try {
+                        socket.close();
+                    } catch (IOException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+                }
+            }
+            return null;
+        }
+
+    }
 }
